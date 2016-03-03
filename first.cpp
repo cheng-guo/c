@@ -434,6 +434,46 @@ int main_73() {
 }
 
 /*
+函数的参数传递
+
+*/
+int main_74() {
+	int a = 3, b = 4;
+	int t = a; a = b; b = t;
+	printf("%d\t%d\n", a, b);
+	return 0;
+}
+
+void swap(int x, int y) {
+	int t = x;
+	x = y;
+	y = t;
+	printf("x = %d\ty = %d\n", x, y);
+}
+
+int main_75() {
+	int a = 3, b = 4;
+	swap(a, b);
+	printf("a = %d\tb = %d\n", a, b);
+	return 0;
+}
+
+void swap(int *x, int *y) {
+	int t = *x;
+	*x = *y;
+	*y = t;
+	printf("x = %d\ty = %d\n", *x, *y);
+}
+
+int main_76() {
+	int a = 3, b = 4;
+	swap(&a, &b);
+	printf("a = %d\tb = %d\n", a, b);
+	return 0;
+}
+
+
+/*
   字符数组和字符串
 */
 #include <string.h>
@@ -641,7 +681,7 @@ struct student {
 };
 
 int main_90() {
-	struct student stu;
+	struct student stu;  //定义一个变量stu，其类型是结构类型 struct student
 	stu.id = 3;   // .就是成员访问运算符，用于访问结构类型变量的成员。
 	stu.program = 45.5;
 	stu.math = 60.5;
@@ -650,7 +690,7 @@ int main_90() {
 	return 0;
 }
 
-int main() {
+int main_91() {
 	struct student students[100];
 	int num = 0;
 	struct student stu;
@@ -669,5 +709,239 @@ int main() {
 	
 	for (int i = 0; i < num;i++)
 		printf("%d\t %f\t%f\n", students[i].id, students[i].program, students[i].math);
+	return 0;
+}
+
+/*
+   通过指向一个结构类型变量的指针变量取访问这个结构变量
+   两种方法:
+     * 取内容 运算符
+     ->间接访问运算符     
+*/
+int main_92() {
+	struct student stu;
+	struct student *p;
+	p = &stu; //&stu的类型就是struct student *
+	(*p).id = 20;
+	(*p).program = 35.5;
+	(*p).math = 55.5;
+
+	printf("%d\t%f\t%f\t\n", stu.id, stu.program, stu.math);
+
+	p->id = 2; // ->是间接访问运算符，
+	p->program = 35.5;
+	p->math = 60.5;
+	printf("%d\t%f\t%f\t\n", stu.id, stu.program, stu.math);
+	return 0;
+}
+
+//
+int main_93() {
+	struct student students[100];
+	int num = 0;
+	struct student stu;
+
+	while (1) {
+		printf("请输入学生信息(id,prog,math):\n");
+		scanf_s("%d %lf %lf", &(stu.id), &(stu.program), &(stu.math)); //double要用%lf格式符
+																	  
+		if (stu.id <= 0) break;
+		students[num] = stu;
+		num++;
+	}
+
+	struct student *p = &(students[0]); // p指向数组的第一个元素，即&(students[0])
+	                                    // 数组名students就是数组第一个元素的地址，
+	                                    // 即等价于&(students[0])
+	                                    //因此也可以写成
+	struct student *q = p + num - 1; // q指向最后一个元素 struct student *p = students;
+	for (; p <= q; p++ )
+		printf("%d\t %f\t%f\n", p->id, p->program, p->math);
+	return 0;
+}
+
+//-----------------
+void InputStudent(struct student *s) {
+	printf("请输入学生信息(id,prog,math):\n");
+	scanf_s("%d %lf %lf", &(s->id), &(s->program), &(s->math));
+}
+
+
+void outStudents(struct student students[], int num) {
+	for (int i = 0; i < num; i++)
+		printf("%d\t %f\t%f\n", students[i].id, students[i].program, students[i].math);
+}
+
+int main_94() {
+	struct student students[10];
+	int num = 0;
+	struct student stu;
+
+	while (1) {
+		InputStudent(&stu);
+		if (stu.id <= 0) break;
+		students[num] = stu;
+		num++;
+	}
+	outStudents(students,num);
+	return 0;
+}
+
+
+//----------动态数组---
+#define INIT_SIZE 5
+#define INC_SIZE 2
+
+int main_95() {
+	struct student *students = 0;
+	int capacity = INIT_SIZE;
+	int num = 0;
+	struct student stu;
+
+	students = (struct student *) malloc( INIT_SIZE*sizeof(struct student) );
+	
+
+
+	while (1) {
+		InputStudent(&stu);
+		if (stu.id <= 0) break;
+		
+		if (num == capacity) {//空间已经满，需要增加容量
+			struct student *p = (struct student *) realloc(students,
+				(capacity+ INC_SIZE) *sizeof(struct student));
+			if (p == 0) {
+				printf("空间申请失败，程序结束！\n");
+				break;
+			}
+			students = p;
+			capacity += INC_SIZE;
+		}
+		
+		students[num] = stu;
+		num++;
+	}
+	outStudents(students, num);
+	return 0;
+}
+
+/*
+内存的3种：
+1）静态存储区分配：全局变量和静态变量
+2) 栈上分配的： 函数的局部变量
+3) 动态分配的：
+*/
+
+
+//静态变量
+void f() {
+	int s = 0;
+	s++;
+	printf("%d\n", s);
+}
+void h() {
+	static int s = 0;
+	s++;
+	printf("%d\n", s);
+}
+int main_100() {
+	f();
+	f();
+
+	h();
+	h();
+	return 0;
+}
+
+//全局变量
+int g = 0;
+void ff() {
+	g++;
+}
+void gg() {
+	g++;
+}
+
+int main_101() {
+	ff();
+	gg();
+	printf("%d\n",g);
+	return 0;
+}
+
+//
+int main_110() {
+	int i ;
+	int s = 0;
+	for (i = 0; i < 10; i++,printf("%d\n",i)) {
+		int i = 5;
+		s += i;
+	}
+	printf("%d\n", s);
+	return 0;
+}
+
+
+//C++的引用变量:是其他变量的别名
+int main_120() {
+	int a = 9;
+	int &b = a;
+	b = 3;
+	printf("%d\n", a);
+	return 0;
+}
+//引用变量主要用处是作为函数之间的参数传递
+void sswap(int &x, int &y) {
+	int t = x; 
+	x = y; 
+	y = t;
+}
+
+int main_121() {
+	int a = 3, b = 4;
+	sswap(a, b);
+	printf("a = %d b = %d\n", a,b);
+	return 0;
+}
+
+/*
+  C++输入输出
+  C++字符串string
+*/
+#include<iostream> //C++的输入输出文件流 头文件
+using std::cout;  //cout是标准名字空间std里定义的一个表示控制台窗口的变量
+using std::cin;   //cin是标准名字空间std里定义的一个表示键盘的变量
+int main_130() {
+	int x, y;
+	cin >> x >> y;  
+	int z = x + y;
+	cout << z << "\n";
+	return 0;
+}
+
+#include <string>  //C++的字符串 头文件
+using std::string; //string是标准名字空间std里定义的一个字符串类型
+int main_131() {
+	string s, t("world");
+	s = "hello";
+	string ss = s + t;
+	//printf("%s", ss.c_str());
+	cout << ss << "\n";  //  <<是C++的输出流运算符	
+	return 0;
+}
+
+typedef struct{
+	string name;
+	int id;
+	double score;
+}Student;
+
+void Scanf(Student &s) {
+	cin >> s.name >> s.id >> s.score;
+}
+
+int main() {
+	Student stu;
+	Scanf(stu);
+	cout << stu.name << " " << stu.id << " " << stu.score << "\n";
 	return 0;
 }
