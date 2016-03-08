@@ -1,79 +1,96 @@
-
 #include <iostream>
 
-using namespace std;
-
 typedef double ElemType;
-typedef struct {
-	ElemType *r; //   ElemType r[100];
-	int listsize;
-	int length;
-}SqList;
 
-bool initList(SqList &L, int initsize = 100) {
-	L.r = new ElemType[initsize];
-	if (!L.r) return false;
-	L.listsize = initsize;
-	L.length = 0;
-	return true;
-}
-bool push_back(SqList &L, ElemType e) {
-	if (L.length == L.listsize) return false;
-	L.r[L.length] = e;  //0 ,1,..,length-1
-	L.length++;
-	return true;
-}
-bool GetElem(SqList L, int i, ElemType &e) {
-	if (i<1 || i>L.length) return false;
-	e = L.r[i - 1];
-	return true;
+typedef struct lnode {
+	ElemType data;
+	struct lnode *next;
+}LNode;
+
+typedef LNode * LkList;
+
+//bool InitLkList(LkList &L){
+bool InitLkList(LNode* &L) {
+	L = (LNode *)malloc(sizeof(LNode)); //L = new LNode;
+	if (!L) return false;
+	L->next = 0; return true;
 }
 
-bool insertList(SqList &L, int i, ElemType e) {
-	if (i < 1 || i > L.length + 1)
-		return false;
-	if (L.length == L.listsize)
-		return false;
-	for (int j = L.length; j >= i; j--) {
-		L.r[j] = L.r[j - 1];
+bool GetElem(LNode* L,int i,ElemType &e) {
+	LNode *p = L; int j = 0; //LNode *p = L->next; j = 1;
+	while (p && j < i) {
+		p = p->next; 
+		j++;
 	}
-	L.r[i - 1] = e;
-	L.length++;
+	if (!p || j>i) return false;
+	e = p->data;
 	return true;
 }
-bool deleteList(SqList &L, int i) {
-	if (i < 1 || i > L.length)
-		return false;
-	ElemType *p;
-	p = i - 1;
-	--L.length;
+bool SetElem(LNode* L, int i, ElemType e) {
+	LNode *p = L; int j = 0; //LNode *p = L->next; j = 1;
+	while (p && j < i) {
+		p = p->next;
+		j++;
+	}
+	if (!p || j>i) return false;
+	p->data = e;
 	return true;
 }
 
-void outList(SqList L, int start = 0) {
-	ElemType e;
-	for (int i = start; i < L.length; i++) {
-		//GetElem(L, i, e);
-		e = L.r[i];
-		std::cout << e << "\n";
+bool InsertList(LNode* L, int i, ElemType e) {
+	LNode *p = L; int j = 0; //LNode *p = L->next; j = 1;
+	while (p && j < i-1) {
+		p = p->next;
+		j++;
+	}
+	if (!p || j>i-1) return false;
+
+	LNode *s = (LNode *)malloc(sizeof(LNode));
+	s->next = 0;
+	s->data = e;
+
+	s->next = p->next;
+	p->next = s;
+	return true;
+}
+
+bool DeleteList(LNode* L, int i) {
+	LNode *p = L; int j = 0; //LNode *p = L->next; j = 1;
+	while (p && j < i - 1) {
+		p = p->next;
+		j++;
+	}
+	if (!p || j>i - 1) return false;
+
+	LNode *q = p->next;
+	p->next = q->next;
+	free(q);
+	return true;
+}
+
+void OutList(LNode* L) {
+	LNode *p = L->next;
+	while (p) {
+		std::cout << p->data << "\n";
+		p = p->next;
 	}
 	std::cout << "\n";
 }
 
 int main() {
-	SqList list;
-	ElemType e = 45.6;
-	initList(list);
+	LNode* list = 0;
+	InitLkList(list);
+	InsertList(list,1, 30.0);
+	InsertList(list, 1, 40.0);
+	InsertList(list, 1, 50.0);
+	InsertList(list, 1, 60.0);
 
-	insertList(list,1,e);
-	e = 56.6;
-	insertList(list, 1, e);
-	e = 66.6;
-	insertList(list, 1, e);
+	OutList(list);
 
-	outList(list);
+	DeleteList(list,2);
+	OutList(list);
 
-	deleteList(list, 2);
-	outList(list);
+	SetElem(list, 2, 78.56);
+	OutList(list);
 	return 0;
 }
