@@ -1,0 +1,6 @@
+C++
+http://c.biancheng.net/cpp/biancheng/cpp/jichu/
+http://c.biancheng.net/cpp/biancheng/cpp/rumen/ 
+http://www.prglab.com/
+http://www.runoob.com/cplusplus/cpp-tutorial.html
+http://www.learncpp.com/

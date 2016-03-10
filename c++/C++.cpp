@@ -1,4 +1,10 @@
-//参考： http://www.learncpp.com/cpp-tutorial/85-constructors/ 
+//参考： http://www.learncpp.com/cpp-tutorial/85-constructors/
+//http://c.biancheng.net/cpp/biancheng/cpp/jichu/
+//http://c.biancheng.net/cpp/biancheng/cpp/rumen/
+//http://www.prglab.com/
+//http://www.runoob.com/cplusplus/cpp-tutorial.html
+//http://www.learncpp.com/
+
 #include <iostream>
 int main_00() {
 	int x, y;
@@ -13,7 +19,7 @@ using std::string; //引入标准名字空间std中定义的名字string
 int main_01() {
 	std::string s1, s2(" world");
 	s1 = "hello";
-	string s3 = s1 + s2;	
+	string s3 = s1 + s2;
 	std::cout << s3 << "\n";
 	return 0;
 }
@@ -55,7 +61,7 @@ public:
 
 int main_11() {
 	Box box; //box是Box类型的一个变量，也称为对象。在C++里变量和对象是一个意思
-	box.length = 2.5; 
+	box.length = 2.5;
 	box.width = 4;
 	box.height = 3;
 
@@ -89,7 +95,7 @@ int main_12() {
 	BBox box;
 	/*
 	box.length = 2.5; //错！，main函数不是Box类的成员函数，
-	                  // 是一个外部函数，不能访问box的length成员  
+	                  // 是一个外部函数，不能访问box的length成员
 	*/
 
 	box.set(2.5, 4, 3); //可以通过Box的公开函数set来修改box变量的数据
@@ -120,10 +126,10 @@ class BBBox
 int main_13() {
 	/*
 	BBBox box;
-	box.length = 2.5; //错，不能访问box的私有成员length					  
-	std::cout << "这个box的面积是 :" << box.area() << "\n"; 
+	box.length = 2.5; //错，不能访问box的私有成员length
+	std::cout << "这个box的面积是 :" << box.area() << "\n";
 	                      //错，不能访问box的私有成员area
-	
+
 	*/
 	return 0;
 }
@@ -138,7 +144,7 @@ protected:    //protected声明的保护属性，不能被外界访问，但可以被派生类所继承
 	string  name;
 	string address;
 	double salary;
-public:	
+public:
 	void set_name(string n) { name = n; }
 	void set_address(string add) {  address=add; }
 	void set_salary(double s) {  salary = s; }
@@ -154,7 +160,7 @@ public:
 //而且Manager可能是不同级别的经理,所以除雇员的一般属性外，还具有一些特定的属性
 //因为Manager类是公开public继承Employee的信息，所以：
 //Employee的除private私有属性外的属性如public公开或protected保护都能被继承下来
-class Manager : public Employee { 
+class Manager : public Employee {
 	int level;  //经理的级别
 public:
 	void set_level(int l) { level = l; }
@@ -169,8 +175,8 @@ public:
 int main_20() {
 	Employee e;
 	Manager m;
-	e.set_name("Lipin"); 
-	e.set_address("Zhenjiang"); 
+	e.set_name("Lipin");
+	e.set_address("Zhenjiang");
 	e.set_salary(1500);
 	e.out();
 
@@ -317,7 +323,7 @@ public:
 		Vector2d c(x + b.x, y + b.y);
 		return c;
 	}
-	
+
 };
 
 Vector2d add(Vector2d a, Vector2d b) {
