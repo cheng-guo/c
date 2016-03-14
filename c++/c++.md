@@ -238,7 +238,7 @@ C/C++通过条件语句和循环语句控制程序的执行过程。
 
 ##数组和字符串
 
-**数组**
+###数组
 
 语法：
 ```
@@ -274,7 +274,7 @@ for(n=0; n < sizeof(newArray); n++)
 int a = newArray[5]; // Assigning 5th element of array value to integer 'a'.
 ```
 
-**字符串 String**
+###字符串 String
 
 C++中的C风格的字符串是结尾带有结束字符'\0'的字符数组。如：
 ```
@@ -377,6 +377,8 @@ int main(){
 
 ##C++的面向对象
 
+###类(class)
+
 在C++,Java这种面向对象编程语言中，数据和函数（对数据的处理过程）被捆绑在一个完整的叫做“对象”的单元中。  
 C++中的类(class)类型是C语言的结构(struct)的扩展，在C语言的结构类型只描述了  
 这种类型的变量具有哪些属性（数据成员），而C++的类类型，则描述了这种类型的对象所具有  
@@ -475,8 +477,366 @@ int main( )
   return 0;
 }
 ```
+再如:
+```
+using namespace std;
+
+class stud 
+{
+    public:
+    char name[30],clas[10];
+    int rol,age;
+    float per;
+
+   void enter() 
+  {
+    cout<<"\n Enter Student Name, Age, Roll number";     cin>>name>>age>>rol;
+    cout<<"\n Enter Student Class and percentage in previous class";     cin>>clas>>per; 
+  }
+
+  void display() 
+  {
+    cout<<"\n Age\tName\tR.No.\tClass\t%ge";
+    cout<<"\n"<<age<<"\t"<<name<<"\t"<<rol<<"\t"<<clas<<"\t"<<per<<"%"; 
+  }
+};
+
+int main()
+{
+    class stud s;
+    s.enter();    //通过类stud的对象s调用类stud的成员函数enter() 输入数据到对象s的数据成员中
+    s.display();
+    cin.get();	//use this to wait for a keypress 
+} 
+```
+
+**this 指针**
+
+C++类的每个成员函数都隐含一个叫做"this"指针，存储调用这个成员函数的对象地址。  
+如上述代码中的enter()和dispaly()函数实际是 enter(stud *this) 和 dispaly(stud *this) 。  
+其中的参数this指向main函数中调用它们的那个对象s（即this指针变量存贮的是s的地址）。
+
+同样的Box代码实际应该是:
+```
+class Box
+{
+ public:
+   double length; // Length of a box
+   double breadth; // Breadth of a box
+   double height; // Height of a box
+   double volume(Box *this){
+	  return this->height * this->length * this->breadth;
+   }
+}
+
+int main(){
+	Box Box1, Box2;
+	//...
+	double vol;
+	vol = Box1.volume(); //实际上是: vol = doubleBox1.volume(&Box1); 
+	vol = Box2.volume(); //实际上是: vol = doubleBox1.volume(&Box2);
+}
+```
+
+###继承(Inheritance)
+
+C++的一个重要特性是继承(Inheritance)，继承是一种重用和扩展已有类(class)而无需修改它们的机制。
+
+通过从已有的类派生出新的类，可以重用已有的代码功能并快速实现新的功能。
+
+被继承的类称为“基类(base class)”或“父类(Parent class)”，从基类派生出的新类称为“派生类(derived class)”或“子类 child class”。从这些子类又可以派生出新的子类，如此，形成一个层次性的继承关系。
+
+如果一个派生类(子类)是从一个基类(父类)直接派生定义的，这种继承称为“单继承(single inheritance)”  
+如果一个派生类(子类)是从2个以上基类(父类)直接派生定义的，这种继承称为“多继承(multiple inheritance)” 
+
+![继承(Inheritance)关系](https://github.com/shdong/shdong/blob/master/c++/inheritance.jpg)
+
+**可见模式visibility mode**
+
+通过关键字public,protected,private控制基类成员在派生类中的可见性（可访问性）。  
+因此根据可见性的不同，可将继承分为：  
+  - 私有继承private inheritance - 当声明是从基类私有(private)派生时，基类的公开(public)  
+  和保护(protected)成员在派生类中都成了私有(private)成员。
+  - 保护继承protected inheritance - 当声明是从基类保护(protected)派生时，基类的公开(public)  
+  和保护(protected)成员在派生类中都成了保护(protected)成员。
+  - 公开继承public inheritance - 当声明是从基类公开(publice)派生时，基类的公开(public)  
+  和保护(protected)成员在派生类中仍然分别为公开(public) 和保护(protected)成员。
+
+![可见模式](https://github.com/shdong/shdong/blob/master/c++/control_inheritance.jpg)
+
+###友元(friends)
+
+在C++中，一个函数或一个类可以被声明为另一个函数或类的友元(friends)  
+一个函数如果不是一个类的成员函数，就不能访问这个类的私有数据。然而一个类的友元函数  
+(不是这个类的成员函数)可以访问这个类的私有数据。 同行，一个类A的函数不能访问其他类如类B的  
+私有数据，但如果类A是类B的友元类，则类A的函数就可以访问类B的私有数据。
+
+例如
+```
+/* C++ program to demonstrate the working of friend function.*/
+#include <iostream>
+using namespace std; 
+
+class Distance {
+    private:
+        int meter; 
+    public:
+        Distance(): meter(0){ }
+        friend int func(Distance); //类Distance将外部函数fun视为其友元
+};
+
+int func(Distance d){
+    //function definition
+    d.meter=10; // 不是类Distance的函数func可以访问类的私有数据
+    return d.meter; 
+}
+
+int main(){ Distance D;
+    cout<<"Distace: "<< func(D);
+    system("pause"); 
+    return 0;
+}
+```
 
 
+###函数重载，运算符重载(function overloading, operator overloading)
+
+**函数重载(function overloading)**
+
+C语言不能有两个同名函数，而C++则允许在一个名字空间里定义多个同名的函数，
+只要它们的参数列表不一样，这种行为称为*函数重载(function overloading)*。
+
+例如
+```
+int add(int x, int y){ return x+y; }
+double add(double x, double y){ return x+y; }
+struct Vector2{
+	double x,y;
+	Vector2(double x0,double y0) :x(x0),y(y0) { }
+};
+dVector2 add(Vector2 x, Vector2 y){
+   Vector2 z; z.x = x.x+y.x; z.y = x.y+y.y; 
+  return z; 
+}
+int main(){
+	Vector2 v1(2.5, 3.5),v2(-1.2, 7.6);
+	Vector2 v = add(v1,v2);
+	int a = 3,b=4;
+	int c = add(a,b);
+	return 0;
+}
+```
+
+```
+#include <iostream>
+using namespace std;
+ 
+class printData 
+{
+   public:
+      void print(int i) {
+        cout << "Printing int: " << i << endl;
+      }
+
+      void print(double  f) {
+        cout << "Printing float: " << f << endl;
+      }
+
+      void print(char* c) {
+        cout << "Printing character: " << c << endl;
+      }
+};
+
+int main(void)
+{
+   printData pd;
+ 
+   // Call print to print integer
+   pd.print(5);
+   // Call print to print float
+   pd.print(500.263);
+   // Call print to print character
+   pd.print("Hello C++");
+ 
+   return 0;
+}
+```
+**运算符重载(operator overloading)**
+
+上面对Vector2类型的对象用函数add进行相加，不如通常的算术运算符'+'来得自然。  
+为了能用'+'对两个Vector2类的对象进行加法运算，我们需要对类Vector2重载“加法运算符”，  
+即告诉加法运算符'+'，如果对它们进行相加。加法运算符的完整函数名是"operator+"，  
+因此，可以如下重新定义参数列表是两个Vector2对象的"operator+"函数。
+```
+struct Vector2{
+	double x,y;
+	Vector2(double x0,double y0) :x(x0),y(y0) { }
+};
+Vector2 operator+(Vector2 v1,Vector2 v2){
+	return Vector2(v1.x+v2.x,v1.y+v2.y);
+}
+int main(){
+	Vector2 v1(2.5, 3.5),v2(-1.2, 7.6);
+	Vector2 v = v1+v2;  //实际上调用的是: Vector2 v = operator+(v1,v2);
+	
+	return 0;
+}
+
+```
+假如Vector2的数据x,y是私有数据，而“operator+”被定义为全局函数（外部函数），则  
+在该函数中访问v1.x即v1的私有数据x是非法的。解决这个问题的方式有两种
+
+  - 方法一：将operator+定义为Vector2的成员函数  
+  ```
+  struct Vector2{
+  private:
+	double x,y;
+  public:
+	Vector2(double x0,double y0) :x(x0),y(y0) { }
+	Vector2 operator+(Vector2 v2){  //相当于 Vector2 operator+(Vector2 *this,Vector2 v2)
+         return Vector2(this->x+v2.x, this->y+v2.y);
+    } 
+  };
+ 
+  int main(){
+    	Vector2 v1(2.5, 3.5),v2(-1.2, 7.6);
+	   Vector2 v = v1+v2;  //实际上调用的是: Vector2 v = v1.operator+(v2);
+	   return 0;
+   }
+  ```
+  - 方法二： 在类Vector2中将外部函数operator声明为其友元。
+  ```
+  struct Vector2{
+  private:
+	double x,y;
+  public:
+	Vector2(double x0,double y0) :x(x0),y(y0) { }
+	friend Vector2 operator+(Vector2 v1,Vector2 v2)； //类Vector2将该函数声明为自己的友元
+  };
+
+   Vector2 operator+(Vector2 v1,Vector2 v2){
+	return Vector2(v1.x+v2.x,v1.y+v2.y);
+   }
+  int main(){
+    	Vector2 v1(2.5, 3.5),v2(-1.2, 7.6);
+	   Vector2 v = v1+v2;  //实际上调用的是: Vector2 v = v1.operator+(v2);
+	   return 0;
+   }
+   ```
+
+
+###模板(template)
+
+**函数模板**
+
+假如要求针对不同类型的两个变量的最小值函数，我们需要对每种参数类型定义一个对应的函数，如
+```
+  int min(int a ,int b){
+     if(a < b) return a;
+     else return b;
+  }
+  float min(float a ,float b){
+     if(a < b) return a;
+     else return b;
+  }
+  double min(double a ,double b){
+     if(a < b) return a;
+     else return b;
+  }
+```
+ 显然这些函数的代码都是一样的，唯一不同的是其参数和返回值的类型，我们只要复制、粘贴、  
+ 修改一下函数规范就可以将同行的函数体用于其它类型的参数。尽管很方面，但复制粘帖修改也  
+ 比较麻烦，更主要的问题是这样的函数不能用于将来可能出现的新的类型参数。
+
+ 解决这个问题的方法是定义一个模板函数，将其中的参数和返回值用所谓的“模板参数”进行参数化。
+ ```
+ template< class Type>
+ Type min(Type a ,Type b){
+     if(a < b) return a;
+     else return b;
+  }
+ ```
+ 在实际调用这个函数时，编译器通常会根据传入的实际参数自动推断出模板参数的类型，  
+ 从而自动帮助我们生成对应参数类型的函数版本，而不需要我们自己编写该参数类型的  
+ 函数版本。
+ ```
+    int main(){
+    	int a=3,b = 5;
+    	float f = 2.5, g = 3.5;
+    	double x = 2.4, y = 6.5;
+    	int c = min(a, b);   //编译器编译到该句时，会自动生成int类型作为参数和返回值
+    	                    // 的min函数  int min(int a, int b);
+    	float h = min(f, h) ;  //编译器编译到该句时，会自动生成int类型作为参数和返回值
+    	                     // 的min函数  float min(float a, float b);
+    	float h = min(f, h) ;  //编译器编译到该句时，会自动生成int类型作为参数和返回值
+    	                    // 的min函数  double min(double a, double b);
+    	double z = min(x, y); 
+    }
+ ```
+**类模板**
+
+上述我们定义的Vector2只能表示分量数值类型是double类型的平面向量，如要  
+要表示int类型或float类型的平面向量，需要重新定义不同名字的向量类。如  
+Vector2i ,Vector2f。对于不同数值类型都要定义这样一个类，很不方便。
+C++类模板（或称模板类）则可以定义一个泛型的向量类。如下：
+ ```
+ template < class Type>
+ class Vector2{
+   private:
+	Type x,y;
+  public:
+	Vector2(Type x0,Type y0) :x(x0),y(y0) { }
+	Vector2 operator+(Vector2 v2){ //相当于 Vector2 operator+(Vector2 *this,Vector2 v2)
+       return Vector2(this->x+v2.x, this->y+v2.y);
+    } 
+  };
+
+  
+
+   int main(){    	
+    	Vector2<int> u(3, 5) ,u2(4, 6);
+    	Vector2<float> v(3.5 ,5.5)，v2(2.5, 10.5);	  //
+        Vector2<int> u3 = u + u2;   // u. operator(u2);
+        Vector2<int> v3 = v + v2;   // v. operator(v2);
+	   return 0;
+   }
+ ```
+ 编译器根据Vector2<int>从类模板Vector2中生成int类型的一个具体Vector2类的所有代码，   
+ 根据Vector2<float>从类模板Vector2中生成float类型的另一个具体Vector2类的所有代码。 
+
+##标准模板库
+
+C++的标准模板库(STL)中定义了许多实用的类模板和函数模板(算法)。
+
+例如向量vector类模板表示一个顺序表（数组）。
+```
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main(){
+	vector< int > ia ; //int类型的向量
+	vector< float > fa ; //float类型的向量
+	ia.push_back(2);   //从后面加入一个整数2
+	ia.push_back(3);   //从后面加入一个整数3
+	ia.push_back(4);   //从后面加入一个整数4
+	int n = ia.size();  //ia向量中整数的个数
+	for(int i = 0 ; i< n ;i++)
+        std::cout << ia[i]<<"\n";
+
+    fa.push_back(2.5);   //从后面加入一个整数2
+	fa.push_back(3.5);   //从后面加入一个整数3
+	fa.push_back(4.5);   //从后面加入一个整数4
+	int n = fa.size();
+	for(int i = 0 ; i< n ;i++)
+        std::cout << fa[i]<<"\n";
+               
+}
+```  
+关于标准模板库(STL)，可以参考[c++ stl tutorial](http://www.tutorialspoint.com/cplusplus/cpp_stl_tutorial.htm)
+
+
+ 
 ###参考资料(Reference)：
 
 1. [http://www.w3schools.in/cplusplus/intro/](http://www.w3schools.in/cplusplus/intro/) 
@@ -484,3 +844,5 @@ int main( )
 2. [http://www.tutorialspoint.com/cplusplus/cpp_quick_guide.htm](http://www.tutorialspoint.com/cplusplus/cpp_quick_guide.htm)
 
 3. [C++ tutorial for C users](http://www.4p8.com/eric.brasseur/cppcen.html)
+
+4. [http://www.learncpp.com/cpp-tutorial/](http://www.learncpp.com/cpp-tutorial/)
